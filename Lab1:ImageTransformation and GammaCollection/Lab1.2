@@ -1,0 +1,22 @@
+from PIL import Image
+
+def enchance_image(img_path):
+    img=Image.open(img_path)
+    width,hight=img.size
+    gray_img=img.convert("L") #เปลี่ยนเป็นGrayscale
+    max_intensity=max(gray_img.getdata()) # หาค่าความเข้มสีที่มากที่สุด
+    for x in range(width):#ไล่เปลี่ยนทุกpixelด้วยFunctionที่ทำขึ้นมา
+        for y in range(hight):
+            intensityX= gray_img.getpixel((x, y)) #Select Grayscale ที่pixelนั้นมาทำการTrasform
+            if((intensityX>=0) and (intensityX<= max_intensity//3)):
+                gray_img.putpixel((x,y),5*max_intensity//6)
+            elif((intensityX> max_intensity//3) and (intensityX<= 2*max_intensity//3)):
+                gray_img.putpixel((x,y),((-2*intensityX)+3*max_intensity//2))
+            elif((intensityX> 2*max_intensity//3) and (intensityX<= max_intensity-1)):
+                gray_img.putpixel((x,y),max_intensity//6)
+    gray_img.show()
+    gray_img.save(f"lab1-2-{img_path}") #Saveภาพ
+
+
+img_path = "flower.jpg"
+enchance_image(img_path)
