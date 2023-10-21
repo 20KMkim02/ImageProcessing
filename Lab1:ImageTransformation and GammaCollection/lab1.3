@@ -1,0 +1,33 @@
+from PIL import Image
+
+def powerlaw(image_path,c,gammar):
+    img=Image.open(image_path)
+    gray_img=img.convert("L")#เปลี่ยนเป็นGrayscale
+    picX,picY=gray_img.size
+    d=[]
+    for i in c:
+        d=[] #สร้างเมทริกซ์มาเก็บค่าgrayscaleทุกค่าในภาพ
+        for j in gammar:
+            # ทำลูปเพื่อเพิ่มค่าgrayscaleทุกค่าลงในlist
+            for x in range(picX):
+                for y in range(picY):
+                    r=gray_img.getpixel((x,y))/255
+                    d.append((i*(r**j))) 
+            
+            maximum=(max(d)) #หาค่าmaxจากทุกpixel เพื่อนำมาทำอัตราส่วน
+            # print(d)
+            # print(maximum)
+            # ทำลูปเพื่อ power law transformationใส่ทุกๆค่าในรูป
+            for x in range(picX):
+                    for y in range(picY):
+                        r=gray_img.getpixel((x,y))/255 #แปลงGrayscaleจาก0-255เป็น 0-1
+                        gray_img.putpixel((x,y),int((i*(r**j)/maximum)*255)) 
+                        #Powerlaw transformation โดยเทื่อทำเสร็จ จะหารด้วยค่าMaxเพื่อเทียบบัญญัติไตรยางค์
+                        # print(int((i*(r**j)/maximum)*255))
+            gray_img.show()
+            gray_img.save(f"c={i}_gamma={j}_{image_path}")
+
+image_path = "scenery2.jpg"
+c = [0.5,1,2]
+gammar = [0.4,2.5]
+powerlaw(image_path,c,gammar)
